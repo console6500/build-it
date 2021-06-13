@@ -19,9 +19,6 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
-    - name: branch
-      run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
-
     - name: credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -36,7 +33,7 @@ jobs:
       run: terraform init
 
     - name: workspace
-      run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
+      run: terraform workspace select ${{ github.head_ref }} || terraform workspace new $BRANCH_NAME
 
     - name: validate
       run: terraform validate
