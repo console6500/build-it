@@ -33,7 +33,7 @@ jobs:
       run: terraform init
 
     - name: workspace
-      run: terraform workspace select ${{ github.head_ref }} || terraform workspace new $BRANCH_NAME
+      run: terraform workspace select ${{ github.head_ref }} || terraform workspace new ${{ github.head_ref }}
 
     - name: validate
       run: terraform validate
