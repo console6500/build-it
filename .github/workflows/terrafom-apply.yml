@@ -40,7 +40,7 @@ jobs:
 
     # Generates an execution plan for Terraform
     - name: plan
-      run: terraform plan
+      run: terraform plan -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
 
     - name: apply
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
