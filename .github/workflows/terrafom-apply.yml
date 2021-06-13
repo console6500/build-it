@@ -1,0 +1,50 @@
+name: 'Terraform'
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    environment: development
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: branch
+      run: echo "::set-env name=BRANCH_NAME::${{ github.head_ref }}"
+
+    - name: credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    
+    - name: setup
+      uses: hashicorp/setup-terraform@v1
+
+    - name: init
+      run: terraform init
+
+    - name: workspace
+      run: terraform workspace select $BRANCH_NAME || terraform workspace new $BRANCH_NAME
+
+    - name: validate
+      run: terraform validate
+
+    # Generates an execution plan for Terraform
+    - name: plan
+      run: terraform plan
+
+    - name: apply
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: terraform apply -auto-approve
