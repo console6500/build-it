@@ -37,4 +37,4 @@ jobs:
       run: terraform destroy -auto-approve -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
       
     - name: remove workspace
-      run: terraform workspace delete $(echo ${{ github.event.ref }}  | cut -d/ -f 3)
+      run: terraform workspace select default && terraform workspace delete $(echo ${{ github.event.ref }}  | cut -d/ -f 3)
