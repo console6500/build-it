@@ -1,8 +1,7 @@
 name: 'Terraform Destroy'
 
 on: 
-  release:
-    types: [deleted]
+  delete:
   workflow_dispatch:
 
 jobs:
@@ -19,11 +18,9 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
-    - name: get release
-      id: get_release
-      uses: bruceadams/get-release@v1.2.2
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Get branch names
+      id: branch
+      uses: tj-actions/branch-names@v4.3
 
     - name: credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -39,10 +36,10 @@ jobs:
       run: terraform init
 
     - name: select workspace
-      run: terraform workspace select ${{ steps.get_release.outputs.tag_name }} || terraform workspace new ${{ steps.get_release.outputs.tag_name }}
+      run: terraform workspace select ${{ steps.branch.outputs.current_branch }}
 
     - name: destroy
-      run: terraform apply -auto-approve -var environment=${{ steps.get_release.outputs.tag_name }}
+      run: terraform apply -auto-approve -var environment=${{ steps.branch.outputs.current_branch }}
       
     - name: remove workspace
-      run: terraform workspace select default && terraform workspace delete ${{ steps.get_release.outputs.tag_name }}
+      run: terraform workspace select default && terraform workspace delete ${{ steps.branch.outputs.current_branch }}
