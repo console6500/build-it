@@ -1,8 +1,6 @@
 name: 'Terraform Destroy'
 
-on:
-  release:
-    types: [deleted]
+on: workflow_dispatch
 
 jobs:
   terraform:
