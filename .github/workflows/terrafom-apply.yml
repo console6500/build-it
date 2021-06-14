@@ -1,11 +1,10 @@
 name: 'Terraform Apply'
 
 on:
-  create:
   workflow_dispatch:
     inputs:
-      name:
-        description: "branch"
+      environment:
+        description: "environment name"
         required: true
 
 jobs:
@@ -40,13 +39,13 @@ jobs:
       run: terraform init
 
     - name: workspace
-      run: terraform workspace select ${{ steps.branch.outputs.current_branch }} || terraform workspace new ${{ steps.branch.outputs.current_branch }}
+      run: terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
 
     - name: validate
       run: terraform validate
 
     - name: plan
-      run: terraform plan -var environment=${{ steps.branch.outputs.current_branch }}
+      run: terraform plan -var environment=${{ github.event.inputs.environment }}
 
     - name: apply
-      run: terraform apply -auto-approve -var environment=${{ steps.branch.outputs.current_branch }}
+      run: terraform apply -auto-approve -var environment=${{ github.event.inputs.environment }}
