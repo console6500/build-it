@@ -1,8 +1,7 @@
 name: 'Terraform Apply'
 
 on:
-  release:
-    types: [created]
+  create:
 
 jobs:
   terraform:
@@ -18,11 +17,9 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
-    - name: get release
-      id: get_release
-      uses: bruceadams/get-release@v1.2.2
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Get branch names
+      id: branch
+      uses: tj-actions/branch-names@v4.3
 
     - name: credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -38,13 +35,13 @@ jobs:
       run: terraform init
 
     - name: workspace
-      run: terraform workspace select ${{ steps.get_release.outputs.tag_name }} || terraform workspace new ${{ steps.get_release.outputs.tag_name }}
+      run: terraform workspace select ${{ steps.branch.outputs.current_branch }} || terraform workspace new ${{ steps.branch.outputs.current_branch }}
 
     - name: validate
       run: terraform validate
 
     - name: plan
-      run: terraform plan -var environment=${{ steps.get_release.outputs.tag_name }}
+      run: terraform plan -var environment=${{ steps.branch.outputs.current_branch }}
 
     - name: apply
-      run: terraform apply -auto-approve -var environment=${{ steps.get_release.outputs.tag_name }}
+      run: terraform apply -auto-approve -var environment=${{ steps.branch.outputs.current_branch }}
