@@ -3,6 +3,10 @@ name: 'Terraform Apply'
 on:
   create:
   workflow_dispatch:
+    inputs:
+      name:
+        description: "branch"
+        required: true
 
 jobs:
   terraform:
