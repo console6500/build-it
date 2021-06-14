@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "automation-tfstate"
+    key    = "build-it/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 variable "environment" {
   type = string
 }
