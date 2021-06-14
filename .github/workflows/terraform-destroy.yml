@@ -1,7 +1,7 @@
-name: 'Terraform Apply'
+name: 'Terraform Destroy'
 
 on:
-  push:
+  delete:
 
 jobs:
   terraform:
@@ -30,16 +30,11 @@ jobs:
     - name: init
       run: terraform init
 
-    - name: workspace
+    - name: select workspace
       run: terraform workspace select $(echo "${GITHUB_REF}"  | cut -d/ -f 3) || terraform workspace new $(echo "${GITHUB_REF}"  | cut -d/ -f 3)
 
-    - name: validate
-      run: terraform validate
-
-    # Generates an execution plan for Terraform
-    - name: plan
-      run: terraform plan -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
-
-    - name: apply
-      if: github.event_name == 'push'
-      run: terraform apply -auto-approve -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
+    - name: destroy
+      run: terraform destroy -auto-approve -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
+      
+    - name: remove workspace
+      run: terraform workspace delete $(echo "${GITHUB_REF}"  | cut -d/ -f 3)
