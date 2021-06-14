@@ -18,10 +18,6 @@ jobs:
     - name: checkout
       uses: actions/checkout@v2
 
-    - name: Get branch names
-      id: branch
-      uses: tj-actions/branch-names@v4.3
-
     - name: credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -36,10 +32,10 @@ jobs:
       run: terraform init
 
     - name: select workspace
-      run: terraform workspace select ${{ steps.branch.outputs.current_branch }}
+      run: terraform workspace select ${{ github.event.ref }}
 
     - name: destroy
-      run: terraform apply -auto-approve -var environment=${{ steps.branch.outputs.current_branch }}
+      run: terraform apply -auto-approve -var environment=${{ github.event.ref }}
       
     - name: remove workspace
-      run: terraform workspace select default && terraform workspace delete ${{ steps.branch.outputs.current_branch }}
+      run: terraform workspace select default && terraform workspace delete ${{ github.event.ref }}
