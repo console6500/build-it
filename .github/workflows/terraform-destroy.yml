@@ -30,8 +30,11 @@ jobs:
     - name: init
       run: terraform init
 
-    - name: workspace
+    - name: select workspace
       run: terraform workspace select $(echo "${GITHUB_REF}"  | cut -d/ -f 3) || terraform workspace new $(echo "${GITHUB_REF}"  | cut -d/ -f 3)
 
-    - name: apply
+    - name: destroy
       run: terraform destroy -auto-approve -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
+      
+    - name: remove workspace
+      run: terraform workspace delete $(echo "${GITHUB_REF}"  | cut -d/ -f 3)
