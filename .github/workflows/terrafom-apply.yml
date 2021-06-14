@@ -41,5 +41,5 @@ jobs:
       run: terraform plan -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
 
     - name: apply
-      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      if: github.event_name == 'push'
       run: terraform apply -auto-approve -var environment=$(echo "${GITHUB_REF}"  | cut -d/ -f 3)
