@@ -1,4 +1,4 @@
-name: 'Terraform Apply'
+name: 'Create Environment'
 
 on:
   workflow_dispatch:
@@ -8,8 +8,8 @@ on:
         required: true
 
 jobs:
-  terraform:
-    name: Terraform
+  main:
+    name: Create
     runs-on: ubuntu-latest
     environment: development
 
