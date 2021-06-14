@@ -2,6 +2,7 @@ name: 'Terraform Apply'
 
 on:
   create:
+  workflow_dispatch:
 
 jobs:
   terraform:
