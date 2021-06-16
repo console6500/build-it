@@ -6,14 +6,10 @@ terraform {
   }
 }
 
-variable "environment" {
-  type = string
-}
-
 data "aws_caller_identity" "id" {}
 
 output "environment" {
-  value = var.environment
+  value = terraform.workspace
 }
 
 output "aws_caller_identity" {
