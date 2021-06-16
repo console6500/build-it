@@ -1,0 +1,48 @@
+name: 'Create Environment'
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Environment name"
+        required: true
+
+jobs:
+  main:
+    name: Create
+    runs-on: ubuntu-latest
+    environment: development
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - name: Get branch names
+      id: branch
+      uses: tj-actions/branch-names@v4.3
+
+    - name: credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-west-2
+    
+    - name: setup
+      uses: hashicorp/setup-terraform@v1
+
+    - name: init
+      run: terraform init
+
+    - name: workspace
+      run: terraform workspace select ${{ github.event.inputs.environment }} || terraform workspace new ${{ github.event.inputs.environment }}
+
+    - name: validate
+      run: terraform validate
+
+    - name: plan
+      run: terraform plan
