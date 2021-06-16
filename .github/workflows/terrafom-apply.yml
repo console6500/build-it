@@ -45,7 +45,7 @@ jobs:
       run: terraform validate
 
     - name: plan
-      run: terraform plan -var environment=${{ github.event.inputs.environment }}
+      run: terraform plan
 
     - name: apply
-      run: terraform apply -auto-approve -var environment=${{ github.event.inputs.environment }}
+      run: terraform apply -auto-approve
