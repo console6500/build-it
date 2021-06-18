@@ -18,6 +18,18 @@ jobs:
         shell: bash
 
     steps:
+    - name: Check environment
+      run: |
+        case ${{ github.event.inputs.environment }} in
+          production|staging|qa)
+            echo "This workflow can not be used on environments named '${{ github.event.inputs.environment }}'."
+            false
+            ;;
+        *)
+            true
+            ;;
+        esac
+    
     - name: checkout
       uses: actions/checkout@v2
 
